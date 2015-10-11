@@ -1,4 +1,6 @@
-package com.telecom.media.demo.liverecorder;
+package com.telecom.media.liverecorder;
+
+import com.telecom.media.demo.liverecorder.R;
 
 import android.app.Activity;
 import android.content.Intent;
