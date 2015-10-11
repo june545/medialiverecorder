@@ -43,6 +43,7 @@ public class LiveRecorderActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(getApplicationContext(), "start living", Toast.LENGTH_SHORT).show();
+				mLiveHelper.startLiveRecord();
 			}
 		});
 	}
@@ -54,6 +55,6 @@ public class LiveRecorderActivity extends Activity {
 	}
 
 	private void initLiveRecorder() {
-
+		mLiveHelper = new LiveHelper(this, mSurfaceView);
 	}
 }

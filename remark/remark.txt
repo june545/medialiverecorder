@@ -1,0 +1,5 @@
+###
+android实时视频网络传输方案总结（一共有五套） 
+http://blog.csdn.net/xiangjai/article/details/12908671
+
+###
