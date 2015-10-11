@@ -34,6 +34,17 @@ public class LiveRecorderActivity extends Activity {
 		initLiveRecorder();
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (mLiveHelper != null) {
+			mLiveHelper.release(); // before camera release
+		}
+		if (mCameraHelper != null) {
+			mCameraHelper.releaseCamera();
+		}
+	}
+
 	private void initView() {
 		mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
 		mStartLiveBtn = (Button) findViewById(R.id.btn_start_live_recorder);

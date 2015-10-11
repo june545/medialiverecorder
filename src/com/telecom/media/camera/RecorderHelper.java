@@ -115,6 +115,7 @@ public class RecorderHelper {
 			mMediaRecorder.setOutputFile(mPath);
 		} else {
 			mMediaRecorder.setOutputFile(mFD);
+			Log.d(TAG, "record to filedescriptor");
 		}
 		// mMediaRecorder.setMaxFileSize(1024 * 1024 * 10);
 

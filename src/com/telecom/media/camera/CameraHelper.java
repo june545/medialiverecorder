@@ -195,6 +195,13 @@ public class CameraHelper implements SurfaceHolder.Callback {
 		return orientation;
 	}
 
+	public void releaseCamera() {
+		mCamera.stopPreview();
+		mCamera.release();
+		mCamera = null;
+		mCameraId = -1;
+	}
+
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub

@@ -3,9 +3,11 @@
  */
 package com.telecom.media.camera.live;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -24,7 +26,7 @@ import com.telecom.media.camera.RecorderHelper;
  * @date 2015年10月10日 下午11:17:23
  */
 public class LiveHelper {
-	private static final String	TAG	= "LiveHelper";
+	private static final String	TAG				= "LiveHelper";
 	private Context				mContext;
 	private SurfaceView			mSurfaceView;
 
@@ -33,6 +35,8 @@ public class LiveHelper {
 	private RecorderHelper		mRecorderHelper;
 	private LocalSocket			receiver, sender;
 	private LocalServerSocket	lss;
+	private boolean				threadEnable	= true;
+	Socket						socket;
 
 	public LiveHelper(Context context, SurfaceView surfaceView) {
 		this.mContext = context;
@@ -52,29 +56,26 @@ public class LiveHelper {
 		InitLocalSocket();
 
 		try {
-			//			Socket receiver = new Socket("192.168.1.5", 8089);
-			//			ParcelFileDescriptor pfd = ParcelFileDescriptor.fromSocket(receiver);
-			mRecorderHelper.prepare(sender.getFileDescriptor());
+			mRecorderHelper.prepare(receiver.getFileDescriptor());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		startVideoRecording();
+		//		startVideoRecording();
+		new Thread(new AudioCaptureAndSendThread()).start();
 	}
 
 	private void InitLocalSocket() {
 		try {
 			lss = new LocalServerSocket("H264");
 			receiver = new LocalSocket();
-
 			receiver.connect(new LocalSocketAddress("H264"));
-			receiver.setReceiveBufferSize(500000);
+			receiver.setReceiveBufferSize(50000);
 			receiver.setSendBufferSize(50000);
 
 			sender = lss.accept();
-			sender.setReceiveBufferSize(500000);
+			sender.setReceiveBufferSize(50000);
 			sender.setSendBufferSize(50000);
-
 		} catch (IOException e) {
 			Log.e(TAG, e.toString());
 			return;
@@ -106,21 +107,106 @@ public class LiveHelper {
 				} catch (IOException e2) {
 					e2.printStackTrace();
 				}
-				number = 0;
 				while (true) {
 					Log.d(TAG, "thread is running");
 					try {
 						byte[] buff = new byte[1024];
 						int count = -1;
 						while ((count = fis.read(buff)) != -1) {
+							Log.d(TAG, "count " + count);
 							Log.d(TAG, new String(buff, 0, count));
 						}
+						Log.d(TAG, "end count " + count);
 					} catch (Exception e) {
-						System.out.println("exception break");
+						Log.d(TAG, "exception break");
 					}
 				}
 			}
 		};
 		t.start();
 	}
+
+	private class AudioCaptureAndSendThread implements Runnable {
+		public void run() {
+			try {
+				sendAmrAudio();
+			} catch (Exception e) {
+				Log.e(TAG, "sendAmrAudio() 出错");
+			}
+		}
+
+		private void sendAmrAudio() throws Exception {
+			DatagramSocket udpSocket = new DatagramSocket();
+			DataInputStream dataInput = new DataInputStream(sender.getInputStream());
+			PrintWriter os = null;
+			try {
+				socket = new Socket("192.168.1.5", 8089);
+				os = new PrintWriter(socket.getOutputStream());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			try {
+				os.write("i am here ! " + System.currentTimeMillis());
+				Log.d(TAG, "i am here ! " + System.currentTimeMillis());
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				Log.d(TAG, " ddddd ");
+			}
+			while (threadEnable) {
+				try {
+					Log.d(TAG, " is running ");
+					byte[] buff = new byte[1024];
+					int count = -1;
+					String s = dataInput.readLine();
+					Log.d(TAG, "readline " + s);
+					//					while ((count = dataInput.read(buff)) != -1) {
+					//						Log.d(TAG, "count " + count);
+					//						Log.d(TAG, new String(buff, 0, count));
+					//					}
+					Log.d(TAG, "end count " + count);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					Log.d(TAG, " xxxxxx ");
+				}
+			}
+		}
+	}
+
+	public void release() {
+		threadEnable = false;
+		if (mRecorderHelper != null) {
+			mRecorderHelper.release();
+		}
+		if (receiver != null) {
+			try {
+				receiver.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (sender != null) {
+			try {
+				sender.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (lss != null) {
+			try {
+				lss.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (socket != null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }
