@@ -17,19 +17,19 @@ import android.view.Surface;
  * @author June Cheng
  * @date 2015年9月8日 下午11:32:01
  */
-public class RecorderHelper {
-	private final String	TAG			= "CameraRecorder";
+public class RecorderHelper implements MediaRecorder.OnInfoListener, MediaRecorder.OnErrorListener {
+	private final String	TAG	= "CameraRecorder";
 	private MediaRecorder	mMediaRecorder;
 	private Camera			mCamera;
 	private Surface			mSurface;
 
 	/** 视频参数，如视频画质、音频采样率等 */
-	private VideoProfile	mProfile	= new VideoProfile();
+	private VideoProfile mProfile = new VideoProfile();
 
 	private String			mPath;
 	private FileDescriptor	mFD;
 
-	private int				orientationDegrees;
+	private int orientationDegrees;
 
 	/**
 	 * 
@@ -108,7 +108,7 @@ public class RecorderHelper {
 		camcorderProfile.audioBitRate = mProfile.audioBitRate;
 		camcorderProfile.videoBitRate = mProfile.videoBitRate;
 		mMediaRecorder.setProfile(camcorderProfile);
-		//		mMediaRecorder.setMaxDuration(1000 * 30);
+		// mMediaRecorder.setMaxDuration(1000 * 30);
 
 		// Step 4: Set output file
 		if (mPath != null) {
@@ -126,6 +126,9 @@ public class RecorderHelper {
 		if (orientationDegrees != 0) {
 			mMediaRecorder.setOrientationHint(orientationDegrees);
 		}
+
+		mMediaRecorder.setOnInfoListener(this);
+		mMediaRecorder.setOnErrorListener(this);
 
 		// Step 6: Prepare configured MediaRecorder
 		try {
@@ -183,5 +186,23 @@ public class RecorderHelper {
 			mMediaRecorder.release(); // release the recorder object
 			mMediaRecorder = null;
 		}
+	}
+
+	@Override
+	public void onError(MediaRecorder mr, int what, int extra) {
+		// TODO Auto-generated method stub
+		Log.d(TAG, "onError  what=" + what + ", extra=" + extra);
+		switch (what) {
+		case MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN:
+			break;
+		default:
+
+		}
+	}
+
+	@Override
+	public void onInfo(MediaRecorder mr, int what, int extra) {
+		// TODO Auto-generated method stub
+		Log.d(TAG, "onInfo  what=" + what + ", extra=" + extra);
 	}
 }

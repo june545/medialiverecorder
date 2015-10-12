@@ -80,7 +80,7 @@ public class LiveHelper {
 			sender.setReceiveBufferSize(bufSize);
 			sender.setSendBufferSize(bufSize);
 		} catch (IOException e) {
-			Log.e(TAG, e.toString());
+			e.printStackTrace();
 			return;
 		}
 	}
@@ -142,21 +142,20 @@ public class LiveHelper {
 			DatagramSocket udpSocket = new DatagramSocket();
 			DataInputStream dataInput = new DataInputStream(receiver.getInputStream());
 
-			PrintWriter os = null;
-			try {
-				socket = new Socket("192.168.1.5", 8089);
-				os = new PrintWriter(socket.getOutputStream());
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			try {
-				os.write("i am here ! " + System.currentTimeMillis());
-				Log.d(TAG, "i am here ! " + System.currentTimeMillis());
-			} catch (Exception e2) {
-				e2.printStackTrace();
-				Log.d(TAG, " ddddd ");
-			}
-
+//			PrintWriter os = null;
+//			try {
+//				socket = new Socket("192.168.1.5", 8089);
+//				os = new PrintWriter(socket.getOutputStream());
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//			try {
+//				os.write("i am here ! " + System.currentTimeMillis());
+//				Log.d(TAG, "i am here ! " + System.currentTimeMillis());
+//			} catch (Exception e2) {
+//				e2.printStackTrace();
+//				Log.d(TAG, " exception ddddd ");
+//			}
 			while (threadEnable) {
 				try {
 					Log.d(TAG, " is running ");
@@ -164,15 +163,16 @@ public class LiveHelper {
 					int count = -1;
 					// String s = dataInput.readLine();
 					// Log.d(TAG, "readline " + s);
-					while ((count = dataInput.read(buff)) != -1) {
-						Log.d(TAG, "count " + count);
-						Log.d(TAG, new String(buff, 0, count));
-					}
+					count = dataInput.read(buff);
+//					while ((count = dataInput.read(buff)) != -1) {
+//						Log.d(TAG, "count " + count);
+//						Log.d(TAG, new String(buff, 0, count));
+//					}
 					Log.d(TAG, "end count " + count);
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					Log.d(TAG, " xxxxxx ");
+					Log.d(TAG, " exception xxxxxx ");
 				}
 			}
 		}
