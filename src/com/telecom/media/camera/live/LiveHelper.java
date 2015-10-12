@@ -26,11 +26,11 @@ import com.telecom.media.camera.RecorderHelper;
  * @date 2015年10月10日 下午11:17:23
  */
 public class LiveHelper {
-	private static final String	TAG				= "LiveHelper";
+	private static final String	TAG	= "LiveHelper";
 	private Context				mContext;
 	private SurfaceView			mSurfaceView;
 
-	private CameraHelper		mCameraHelper;
+	private CameraHelper mCameraHelper;
 
 	private RecorderHelper		mRecorderHelper;
 	private LocalSocket			receiver, sender;
@@ -56,33 +56,36 @@ public class LiveHelper {
 		InitLocalSocket();
 
 		try {
-			mRecorderHelper.prepare(receiver.getFileDescriptor());
+			mRecorderHelper.prepare(sender.getFileDescriptor());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		//		startVideoRecording();
+		// startVideoRecording();
 		new Thread(new AudioCaptureAndSendThread()).start();
 	}
 
 	private void InitLocalSocket() {
 		try {
+			final int bufSize = 1024;
+
 			lss = new LocalServerSocket("H264");
+
 			receiver = new LocalSocket();
 			receiver.connect(new LocalSocketAddress("H264"));
-			receiver.setReceiveBufferSize(50000);
-			receiver.setSendBufferSize(50000);
+			receiver.setReceiveBufferSize(bufSize);
+			receiver.setSendBufferSize(bufSize);
 
 			sender = lss.accept();
-			sender.setReceiveBufferSize(50000);
-			sender.setSendBufferSize(50000);
+			sender.setReceiveBufferSize(bufSize);
+			sender.setSendBufferSize(bufSize);
 		} catch (IOException e) {
 			Log.e(TAG, e.toString());
 			return;
 		}
 	}
 
-	Thread	t;
+	Thread t;
 
 	private void startVideoRecording() {
 		t = new Thread() {
@@ -137,7 +140,8 @@ public class LiveHelper {
 
 		private void sendAmrAudio() throws Exception {
 			DatagramSocket udpSocket = new DatagramSocket();
-			DataInputStream dataInput = new DataInputStream(sender.getInputStream());
+			DataInputStream dataInput = new DataInputStream(receiver.getInputStream());
+
 			PrintWriter os = null;
 			try {
 				socket = new Socket("192.168.1.5", 8089);
@@ -152,17 +156,18 @@ public class LiveHelper {
 				e2.printStackTrace();
 				Log.d(TAG, " ddddd ");
 			}
+
 			while (threadEnable) {
 				try {
 					Log.d(TAG, " is running ");
 					byte[] buff = new byte[1024];
 					int count = -1;
-					String s = dataInput.readLine();
-					Log.d(TAG, "readline " + s);
-					//					while ((count = dataInput.read(buff)) != -1) {
-					//						Log.d(TAG, "count " + count);
-					//						Log.d(TAG, new String(buff, 0, count));
-					//					}
+					// String s = dataInput.readLine();
+					// Log.d(TAG, "readline " + s);
+					while ((count = dataInput.read(buff)) != -1) {
+						Log.d(TAG, "count " + count);
+						Log.d(TAG, new String(buff, 0, count));
+					}
 					Log.d(TAG, "end count " + count);
 
 				} catch (Exception e) {
