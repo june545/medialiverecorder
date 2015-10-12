@@ -13,6 +13,12 @@
         android:id="@+id/btn_start_live_recorder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="直播" />
+        android:text="开始直播" />
+
+    <Button
+        android:id="@+id/btn_stop_live_recorder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="停止直播" />
 
 </LinearLayout>

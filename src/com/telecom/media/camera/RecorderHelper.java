@@ -162,6 +162,7 @@ public class RecorderHelper {
 				}
 			});
 			mMediaRecorder.start();
+			Log.d(TAG, "start mediarecorder");
 		}
 	}
 
@@ -177,7 +178,7 @@ public class RecorderHelper {
 	/**
 	 * 释放MediaRecorder
 	 */
-	public void release() {
+	public synchronized void release() {
 		if (mMediaRecorder != null) {
 			mMediaRecorder.reset(); // clear recorder configuration
 			mMediaRecorder.release(); // release the recorder object

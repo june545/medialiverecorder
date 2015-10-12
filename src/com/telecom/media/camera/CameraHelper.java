@@ -122,6 +122,11 @@ public class CameraHelper implements SurfaceHolder.Callback {
 		set();
 	}
 
+	/** 是否正在预览 */
+	public boolean isPreview() {
+		return isPreview;
+	}
+
 	private void set() {
 		if (isPreview) {
 			mCamera.setPreviewCallback(new PreviewCallback() {
@@ -196,10 +201,14 @@ public class CameraHelper implements SurfaceHolder.Callback {
 	}
 
 	public void releaseCamera() {
-		mCamera.stopPreview();
-		mCamera.release();
-		mCamera = null;
-		mCameraId = -1;
+		Log.d(TAG, "release camera");
+		if (mCamera != null) {
+			mCamera.stopPreview();
+			mCamera.release();
+			mCamera = null;
+			mCameraId = -1;
+		}
+		Log.d(TAG, "release camera end");
 	}
 
 	@Override
@@ -207,6 +216,8 @@ public class CameraHelper implements SurfaceHolder.Callback {
 		// TODO Auto-generated method stub
 		if (holder == null) {
 			return;
+		} else {
+			Log.d(TAG, "surfaceCreated-> " + holder.toString() + ", " + holder.getSurface().toString());
 		}
 		if (mCamera == null) {
 			mCamera = CameraUtil.getBackCamera();
