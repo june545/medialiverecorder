@@ -2,6 +2,7 @@ package com.telecom.media.liverecorder;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,8 +20,8 @@ import com.telecom.media.demo.liverecorder.R;
  */
 public class LiveRecorderActivity extends Activity {
 
-	private SurfaceView		mSurfaceView;
-	private Button			mStartLiveBtn;
+	private SurfaceView	mSurfaceView;
+	private Button		mStartLiveBtn;
 
 	private CameraHelper	mCameraHelper;
 	private LiveHelper		mLiveHelper;
@@ -40,15 +41,13 @@ public class LiveRecorderActivity extends Activity {
 		if (mLiveHelper != null) {
 			mLiveHelper.release(); // before camera release
 		}
-		if (mCameraHelper != null) {
-			mCameraHelper.releaseCamera();
-		}
 	}
 
 	private void initView() {
 		mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
 		mStartLiveBtn = (Button) findViewById(R.id.btn_start_live_recorder);
 
+		mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mStartLiveBtn.setOnClickListener(new OnClickListener() {
 
 			@Override

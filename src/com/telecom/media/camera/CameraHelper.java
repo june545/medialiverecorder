@@ -58,10 +58,10 @@ public class CameraHelper implements SurfaceHolder.Callback {
 			try {
 				mCamera.setPreviewDisplay(mSurfaceHolder);
 				setCameraDisplayOrientation();
-				//				Parameters parameters = mCamera.getParameters();
-				//				parameters.set("orientation", "landscape");
-				//				parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-				//				mCamera.setParameters(parameters);
+				// Parameters parameters = mCamera.getParameters();
+				// parameters.set("orientation", "landscape");
+				// parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+				// mCamera.setParameters(parameters);
 
 				setCameraParameters();
 			} catch (Exception e) {
@@ -77,36 +77,44 @@ public class CameraHelper implements SurfaceHolder.Callback {
 		Parameters mParameters = mCamera.getParameters();
 		CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
 		mParameters.setPreviewSize(camcorderProfile.videoFrameWidth, camcorderProfile.videoFrameHeight);
-		//	mParameters.setPreviewFrameRate(camcorderProfile.videoFrameRate);
+		// mParameters.setPreviewFrameRate(camcorderProfile.videoFrameRate);
 
 		// Set flash mode.
-		//		String flashMode = mPreferences.getString(CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE, getString(R.string.pref_camera_video_flashmode_default));
-		//		List<String> supportedFlash = mParameters.getSupportedFlashModes();
-		//		if (isSupported(flashMode, supportedFlash)) {
-		//			mParameters.setFlashMode(flashMode);
-		//		} else {
-		//			flashMode = mParameters.getFlashMode();
-		//			if (flashMode == null) {
-		//				flashMode = getString(R.string.pref_camera_flashmode_no_flash);
-		//			}
-		//		}
+		// String flashMode =
+		// mPreferences.getString(CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
+		// getString(R.string.pref_camera_video_flashmode_default));
+		// List<String> supportedFlash = mParameters.getSupportedFlashModes();
+		// if (isSupported(flashMode, supportedFlash)) {
+		// mParameters.setFlashMode(flashMode);
+		// } else {
+		// flashMode = mParameters.getFlashMode();
+		// if (flashMode == null) {
+		// flashMode = getString(R.string.pref_camera_flashmode_no_flash);
+		// }
+		// }
 
 		// Set white balance parameter.
-		//		String whiteBalance = mPreferences.getString(CameraSettings.KEY_WHITE_BALANCE, getString(R.string.pref_camera_whitebalance_default));
-		//		if (isSupported(whiteBalance, mParameters.getSupportedWhiteBalance())) {
-		//			mParameters.setWhiteBalance(whiteBalance);
-		//		} else {
-		//			whiteBalance = mParameters.getWhiteBalance();
-		//			if (whiteBalance == null) {
-		//				whiteBalance = Parameters.WHITE_BALANCE_AUTO;
-		//			}
-		//		}
+		// String whiteBalance =
+		// mPreferences.getString(CameraSettings.KEY_WHITE_BALANCE,
+		// getString(R.string.pref_camera_whitebalance_default));
+		// if (isSupported(whiteBalance,
+		// mParameters.getSupportedWhiteBalance())) {
+		// mParameters.setWhiteBalance(whiteBalance);
+		// } else {
+		// whiteBalance = mParameters.getWhiteBalance();
+		// if (whiteBalance == null) {
+		// whiteBalance = Parameters.WHITE_BALANCE_AUTO;
+		// }
+		// }
 
 		// Set color effect parameter.
-		//		String colorEffect = mPreferences.getString(CameraSettings.KEY_COLOR_EFFECT, getString(R.string.pref_camera_coloreffect_default));
-		//		if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
-		//			mParameters.setColorEffect(colorEffect);
-		//		}
+		// String colorEffect =
+		// mPreferences.getString(CameraSettings.KEY_COLOR_EFFECT,
+		// getString(R.string.pref_camera_coloreffect_default));
+		// if (isSupported(colorEffect, mParameters.getSupportedColorEffects()))
+		// {
+		// mParameters.setColorEffect(colorEffect);
+		// }
 
 		mParameters.setFocusMode(Camera.Parameters.FLASH_MODE_AUTO);
 		mCamera.setParameters(mParameters);
@@ -128,11 +136,12 @@ public class CameraHelper implements SurfaceHolder.Callback {
 
 				@Override
 				public void onPreviewFrame(byte[] data, Camera camera) {
-					//					StringBuffer sb = new StringBuffer();
-					//					for (byte b : data) {
-					//						sb.append(new String(data));
-					//					}
-					//					Log.d(TAG, "onPreviewFrame" + ByteUtil.getHexString(data));
+					// StringBuffer sb = new StringBuffer();
+					// for (byte b : data) {
+					// sb.append(new String(data));
+					// }
+					// Log.d(TAG, "onPreviewFrame" +
+					// ByteUtil.getHexString(data));
 				}
 			});
 			mCamera.setPreviewCallbackWithBuffer(new PreviewCallback() {
@@ -196,15 +205,19 @@ public class CameraHelper implements SurfaceHolder.Callback {
 	}
 
 	public void releaseCamera() {
-		mCamera.stopPreview();
-		mCamera.release();
-		mCamera = null;
+		if (mCamera != null) {
+			mCamera.stopPreview();
+			mCamera.setPreviewCallbackWithBuffer(null);
+			mCamera.release();
+			mCamera = null;
+			isPreview = false;
+		}
 		mCameraId = -1;
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
+		Log.d(TAG, "surfaceCreated()");
 		if (holder == null) {
 			return;
 		}
@@ -219,21 +232,14 @@ public class CameraHelper implements SurfaceHolder.Callback {
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-		// TODO Auto-generated method stub
-
+		Log.d(TAG, "surfaceCreated() format=" + format + ", width=" + width + ", height=" + height);
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// TODO Auto-generated method stub
-		if (mCamera != null) {
-			mCamera.stopPreview();
-			mCamera.setPreviewCallbackWithBuffer(null);
-			mCamera.release();
-			mCamera = null;
-			isPreview = false;
-		}
+		Log.d(TAG, "surfaceDestroyed()");
+		releaseCamera();
 		mSurfaceHolder = null;
-		//		mSurface = null;
+		// mSurface = null;
 	}
 }
