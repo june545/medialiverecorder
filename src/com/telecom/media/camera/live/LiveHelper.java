@@ -149,8 +149,9 @@ public class LiveHelper {
 					count = dataInput.read(buff);
 					if (count != -1) {
 						String s = ByteUtil.getHexString(buff);
-						SocketConnector.send(s);
 						Log.d(TAG, " data " + s.toUpperCase());
+						
+//						SocketConnector.send(s);
 					}
 
 				} catch (Exception e) {
