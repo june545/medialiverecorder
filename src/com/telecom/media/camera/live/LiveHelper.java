@@ -9,18 +9,19 @@ import java.net.DatagramSocket;
 import java.net.Socket;
 import java.util.Random;
 
+import com.telecom.media.camera.ByteUtil;
+import com.telecom.media.camera.CameraHelper;
+import com.telecom.media.camera.RecorderHelper;
+
 import android.content.Context;
+import android.hardware.Camera;
+import android.hardware.Camera.PreviewCallback;
 import android.net.LocalServerSocket;
 import android.net.LocalSocket;
 import android.net.LocalSocketAddress;
 import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceView;
-
-import com.telecom.media.camera.ByteUtil;
-import com.telecom.media.camera.CameraHelper;
-import com.telecom.media.camera.RecorderHelper;
-import com.telecom.media.rtsp.SocketConnector;
 
 /**
  * @author June Cheng
@@ -32,13 +33,13 @@ public class LiveHelper {
 	private Context				mContext;
 	private SurfaceView			mSurfaceView;
 
-	private CameraHelper		mCameraHelper;
+	private CameraHelper mCameraHelper;
 
 	private RecorderHelper		mRecorderHelper;
 	private LocalSocket			receiver, sender;
 	private LocalServerSocket	lss;
 	private int					mSocketId;
-	private boolean				threadEnable		= true;
+	private boolean				threadEnable	= true;
 	Socket						socket;
 
 	public LiveHelper(Context context, SurfaceView surfaceView) {
@@ -47,6 +48,7 @@ public class LiveHelper {
 		this.mSurfaceView = surfaceView;
 	}
 
+	/** 录制视频到文件 */
 	public void startRecordVideo() {
 		if (!mCameraHelper.isPreview()) {
 			Log.d(TAG, " 当前照相不在预览中 ");
@@ -83,7 +85,7 @@ public class LiveHelper {
 			e.printStackTrace();
 		}
 
-		//		startVideoRecording();
+		// startVideoRecording();
 		new Thread(new AudioCaptureAndSendThread()).start();
 	}
 
@@ -100,6 +102,10 @@ public class LiveHelper {
 		}
 
 		closeSockets();
+	}
+
+	private void addCallback() {
+		mCameraHelper.getCamera().setPreviewCallbackWithBuffer(new PreviewCallbackImpl());
 	}
 
 	private void InitLocalSocket() {
@@ -150,8 +156,8 @@ public class LiveHelper {
 					if (count != -1) {
 						String s = ByteUtil.getHexString(buff);
 						Log.d(TAG, " data " + s.toUpperCase());
-						
-//						SocketConnector.send(s);
+
+						// SocketConnector.send(s);
 					}
 
 				} catch (Exception e) {
