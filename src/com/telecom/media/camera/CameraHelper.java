@@ -4,6 +4,7 @@
 package com.telecom.media.camera;
 
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
@@ -64,6 +65,7 @@ public class CameraHelper implements SurfaceHolder.Callback {
 				//				mCamera.setParameters(parameters);
 
 				setCameraParameters();
+				
 			} catch (Exception e) {
 				Log.d(TAG, "Error starting camera preview: " + e.getMessage());
 				e.printStackTrace();
@@ -109,6 +111,7 @@ public class CameraHelper implements SurfaceHolder.Callback {
 		//		}
 
 		mParameters.setFocusMode(Camera.Parameters.FLASH_MODE_AUTO);
+//		mParameters.setPictureFormat(ImageFormat.NV21);
 		mCamera.setParameters(mParameters);
 		// Keep preview size up to date.
 	}
@@ -119,7 +122,7 @@ public class CameraHelper implements SurfaceHolder.Callback {
 			Log.d(TAG, "the camera starts previewing");
 			isPreview = true;
 		}
-		set();
+//		set();
 	}
 
 	/** 是否正在预览 */
@@ -129,17 +132,20 @@ public class CameraHelper implements SurfaceHolder.Callback {
 
 	private void set() {
 		if (isPreview) {
-			mCamera.setPreviewCallback(new PreviewCallback() {
-
-				@Override
-				public void onPreviewFrame(byte[] data, Camera camera) {
-					//					StringBuffer sb = new StringBuffer();
-					//					for (byte b : data) {
-					//						sb.append(new String(data));
-					//					}
-					//					Log.d(TAG, "onPreviewFrame" + ByteUtil.getHexString(data));
-				}
-			});
+			Log.d(TAG, "set preview callback");
+//			mCamera.setPreviewCallback(new PreviewCallback() {
+//
+//				@Override
+//				public void onPreviewFrame(byte[] data, Camera camera) {
+//					Log.d(TAG, "onPreviewFrame c");
+//										StringBuffer sb = new StringBuffer();
+//										for (byte b : data) {
+//											sb.append(new String(data));
+//										}
+//										Log.d(TAG, "onPreviewFrame" + ByteUtil.getHexString(data));
+//				}
+//			});
+			mCamera.addCallbackBuffer(new byte[518400]);
 			mCamera.setPreviewCallbackWithBuffer(new PreviewCallback() {
 
 				@Override

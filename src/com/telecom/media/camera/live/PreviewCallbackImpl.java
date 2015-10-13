@@ -22,8 +22,9 @@ import android.util.Log;
  * @date 2015年10月13日 下午4:55:20
  */
 public class PreviewCallbackImpl implements PreviewCallback {
+	private final String TAG = "PreviewCallbackImpl";
 
-	private String ipname = "";
+	private String ipname = "192.168.1.7";
 
 	/*
 	 * (non-Javadoc)
@@ -33,6 +34,7 @@ public class PreviewCallbackImpl implements PreviewCallback {
 	 */
 	@Override
 	public void onPreviewFrame(byte[] data, Camera camera) {
+		Log.d(TAG, "onPreviewFrame");
 		Size size = camera.getParameters().getPreviewSize();
 		try {
 			// 调用image.compressToJpeg（）将YUV格式图像数据data转为jpg格式
@@ -46,6 +48,7 @@ public class PreviewCallbackImpl implements PreviewCallback {
 				th.start();
 			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			Log.e("Sys", "Error:" + ex.getMessage());
 		}
 	}

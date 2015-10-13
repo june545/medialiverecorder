@@ -6,12 +6,7 @@ package com.telecom.media.camera.live;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.Socket;
 import java.util.Random;
-
-import com.telecom.media.camera.ByteUtil;
-import com.telecom.media.camera.CameraHelper;
-import com.telecom.media.camera.RecorderHelper;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -23,6 +18,11 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.telecom.media.camera.ByteUtil;
+import com.telecom.media.camera.CameraHelper;
+import com.telecom.media.camera.RecorderHelper;
+import com.telecom.media.rtsp.SocketConnector;
+
 /**
  * @author June Cheng
  * @date 2015年10月10日 下午11:17:23
@@ -33,14 +33,14 @@ public class LiveHelper {
 	private Context				mContext;
 	private SurfaceView			mSurfaceView;
 
-	private CameraHelper mCameraHelper;
+	private CameraHelper		mCameraHelper;
 
 	private RecorderHelper		mRecorderHelper;
 	private LocalSocket			receiver, sender;
 	private LocalServerSocket	lss;
 	private int					mSocketId;
-	private boolean				threadEnable	= true;
-	Socket						socket;
+
+	private Thread				mSendThread;
 
 	public LiveHelper(Context context, SurfaceView surfaceView) {
 		this.mContext = context;
@@ -85,11 +85,15 @@ public class LiveHelper {
 			e.printStackTrace();
 		}
 
-		// startVideoRecording();
-		new Thread(new AudioCaptureAndSendThread()).start();
+		mSendThread = new AudioCaptureAndSendThread();
+		mSendThread.start();
 	}
 
 	public void stopRecord() {
+		if (mSendThread != null) {
+			((AudioCaptureAndSendThread) mSendThread).cancel();
+		}
+
 		if (mRecorderHelper != null) {
 			new Thread(new Runnable() {
 
@@ -100,15 +104,24 @@ public class LiveHelper {
 				}
 			}).start();
 		}
-
 		closeSockets();
 	}
 
-	private void addCallback() {
-		mCameraHelper.getCamera().setPreviewCallbackWithBuffer(new PreviewCallbackImpl());
+	public void addCallback() {
+		Log.d(TAG, "setCallback()");
+//		mCameraHelper.getCamera().addCallbackBuffer(new byte[1024 * 64]);
+//		mCameraHelper.getCamera().setPreviewCallback(new PreviewCallback() {
+//
+//			@Override
+//			public void onPreviewFrame(byte[] data, Camera camera) {
+//				Log.d(TAG, "onPreviewFrame");
+//			}
+//		});
+		mCameraHelper.getCamera().setPreviewCallback(new PreviewCallbackImpl());
 	}
 
 	private void InitLocalSocket() {
+		Log.d(TAG, "init local socket");
 		try {
 			for (int i = 0; i < 10; i++) {
 				try {
@@ -134,7 +147,9 @@ public class LiveHelper {
 		}
 	}
 
-	private class AudioCaptureAndSendThread implements Runnable {
+	private class AudioCaptureAndSendThread extends Thread {
+		private boolean	threadEnable	= true;
+
 		public void run() {
 			try {
 				readStream();
@@ -157,7 +172,7 @@ public class LiveHelper {
 						String s = ByteUtil.getHexString(buff);
 						Log.d(TAG, " data " + s.toUpperCase());
 
-						// SocketConnector.send(s);
+						SocketConnector.send(s);
 					}
 
 				} catch (Exception e) {
@@ -166,11 +181,14 @@ public class LiveHelper {
 				}
 			}
 		}
+
+		public void cancel() {
+			threadEnable = false;
+		}
 	}
 
 	public void closeSockets() {
 		Log.d(TAG, "release start");
-		threadEnable = false;
 		Log.d(TAG, "release xxxxx");
 
 		try {
@@ -185,11 +203,6 @@ public class LiveHelper {
 		}
 		try {
 			lss.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			socket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

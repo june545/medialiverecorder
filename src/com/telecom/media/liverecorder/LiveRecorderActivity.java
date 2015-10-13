@@ -3,6 +3,7 @@ package com.telecom.media.liverecorder;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,14 +56,16 @@ public class LiveRecorderActivity extends Activity {
 		mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
 		mStartLiveBtn = (Button) findViewById(R.id.btn_start_live_recorder);
 		mStopLiveBtn = (Button) findViewById(R.id.btn_stop_live_recorder);
-
+		
+		mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mStartLiveBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(getApplicationContext(), "start live video", Toast.LENGTH_SHORT).show();
-				mLiveHelper.startLiveRecord();
-				//				mLiveHelper.startRecordVideo();
+//				mLiveHelper.startLiveRecord();
+				mLiveHelper.addCallback();
+//								mLiveHelper.startRecordVideo();
 			}
 		});
 		mStopLiveBtn.setOnClickListener(new OnClickListener() {

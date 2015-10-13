@@ -1,8 +1,9 @@
-package com.example.preview;
+package com.example.preview.streaming;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -19,13 +20,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.sun.media.sound.Toolkit;
+public class ImageStreamingServer {
 
-public class ImageServer {
-	public static ServerSocket ss = null;
+	public static ServerSocket	ss	= null;
 
 	public static void main(String args[]) throws IOException {
-		ss = new ServerSocket(6000);
+		ss = new ServerSocket(8089);
 
 		final ImageFrame frame = new ImageFrame(ss);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -144,8 +144,7 @@ class saveimage implements ActionListener {
 			inFile.close();
 			ins.close();
 			s.close();
-			javax.swing.JOptionPane.showMessageDialog(new javax.swing.JFrame(), "已接保存成功", "提示!",
-					javax.swing.JOptionPane.PLAIN_MESSAGE);
+			javax.swing.JOptionPane.showMessageDialog(new javax.swing.JFrame(), "已接保存成功", "提示!", javax.swing.JOptionPane.PLAIN_MESSAGE);
 		} catch (IOException e) {
 
 			e.printStackTrace();
