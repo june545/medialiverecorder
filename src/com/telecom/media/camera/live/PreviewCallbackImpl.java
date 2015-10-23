@@ -21,9 +21,9 @@ import android.util.Log;
  * @date 2015年10月13日 下午4:55:20
  */
 public class PreviewCallbackImpl implements PreviewCallback {
-	private final String TAG = "PreviewCallbackImpl";
+	private final String	TAG		= "PreviewCallbackImpl";
 
-	private String ipname = "192.168.18.37";
+	private String			ipname	= MediaConsts.HOST;
 
 	/*
 	 * (non-Javadoc)
@@ -43,7 +43,7 @@ public class PreviewCallbackImpl implements PreviewCallback {
 				image.compressToJpeg(new Rect(0, 0, size.width, size.height), 80, outstream);
 				outstream.flush();
 				// 启用线程将图像数据发送出去
-				(new FrameStreamer(new ByteArrayInputStream(outstream.toByteArray()), ipname, 8089)).start();
+				(new FrameStreamer(new ByteArrayInputStream(outstream.toByteArray()), ipname, MediaConsts.PORT)).start();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

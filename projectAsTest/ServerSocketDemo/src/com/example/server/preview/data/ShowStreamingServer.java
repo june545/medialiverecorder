@@ -1,4 +1,4 @@
-package com.example.preview;
+package com.example.server.preview.data;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -20,7 +20,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class ImageServer {
+public class ShowStreamingServer {
+
 	public static ServerSocket	ss	= null;
 
 	public static void main(String args[]) throws IOException {

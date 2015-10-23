@@ -9,6 +9,8 @@ package com.telecom.media.camera.live.source;
  */
 public abstract class StreamSource {
 
+	public static final int	DEFAULT_STREAM_SOURCE	= StreamSourceFactory.STREAM_PREVIEW_FRAME;
+
 	public void start() {
 	}
 

@@ -3,16 +3,16 @@
  */
 package com.telecom.media.camera.live;
 
-import com.telecom.media.camera.CameraHelper;
-import com.telecom.media.camera.RecorderHelper;
-import com.telecom.media.camera.live.source.ByMediaRecorder;
-import com.telecom.media.camera.live.source.ByPreviewCallback;
-import com.telecom.media.camera.live.source.StreamSource;
-
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceView;
+
+import com.telecom.media.camera.CameraHelper;
+import com.telecom.media.camera.RecorderHelper;
+import com.telecom.media.camera.live.source.ByPreviewCallback;
+import com.telecom.media.camera.live.source.StreamSource;
+import com.telecom.media.camera.live.source.StreamSourceFactory;
 
 /**
  * @author June Cheng
@@ -24,13 +24,11 @@ public class LiveHelper {
 	private Context				mContext;
 	private SurfaceView			mSurfaceView;
 
-	private CameraHelper mCameraHelper;
+	private CameraHelper		mCameraHelper;
 
-	private RecorderHelper mRecorderHelper;
+	private RecorderHelper		mRecorderHelper;
 
-	private Thread mSendThread;
-
-	private StreamSource mStreamSource;
+	private StreamSource		mStreamSource;
 
 	public LiveHelper(Context context, SurfaceView surfaceView) {
 		this.mContext = context;
@@ -64,8 +62,7 @@ public class LiveHelper {
 	public void startLive() {
 		Log.d(TAG, " start live record ");
 		if (mStreamSource == null) {
-			//			mStreamSource = new ByMediaRecorder(mSurfaceView);
-			mStreamSource = new ByPreviewCallback();
+			mStreamSource = StreamSourceFactory.create(StreamSource.DEFAULT_STREAM_SOURCE, mSurfaceView);
 			mStreamSource.start();
 		}
 	}

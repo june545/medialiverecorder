@@ -56,7 +56,7 @@ public class LiveRecorderActivity extends Activity {
 		mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
 		mStartLiveBtn = (Button) findViewById(R.id.btn_start_live_recorder);
 		mStopLiveBtn = (Button) findViewById(R.id.btn_stop_live_recorder);
-		
+
 		mSurfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mStartLiveBtn.setOnClickListener(new OnClickListener() {
 
@@ -64,7 +64,7 @@ public class LiveRecorderActivity extends Activity {
 			public void onClick(View v) {
 				Toast.makeText(getApplicationContext(), "start live video", Toast.LENGTH_SHORT).show();
 				mLiveHelper.startLive();
-//								mLiveHelper.startRecordVideo();
+				// mLiveHelper.startRecordVideo();
 			}
 		});
 		mStopLiveBtn.setOnClickListener(new OnClickListener() {

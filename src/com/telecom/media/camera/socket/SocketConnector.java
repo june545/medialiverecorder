@@ -8,6 +8,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.telecom.media.camera.live.MediaConsts;
+
 import android.util.Log;
 
 /**
@@ -29,7 +31,7 @@ public class SocketConnector {
 	public static void send(final String s) {
 		if (socket == null) {
 			try {
-				socket = new Socket("192.168.1.7", 8089);
+				socket = new Socket(MediaConsts.HOST, MediaConsts.PORT);
 				socket.setSoTimeout(3000);
 				os = new PrintWriter(socket.getOutputStream());
 			} catch (UnknownHostException e) {
