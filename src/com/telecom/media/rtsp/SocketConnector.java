@@ -23,7 +23,7 @@ public class SocketConnector {
 	public static void send(final String s) {
 		if (socket == null) {
 			try {
-				socket = new Socket("192.168.1.7", 8089);
+				socket = new Socket("192.168.18.37", 8089);
 				socket.setSoTimeout(3000);
 				os = new PrintWriter(socket.getOutputStream());
 			} catch (UnknownHostException e) {
@@ -41,7 +41,7 @@ public class SocketConnector {
 					if (os != null) {
 						os.write("data " + s);
 //						os.flush();
-						Log.d("SocketConnector", "sending data");
+//						Log.d("SocketConnector", "sending data");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

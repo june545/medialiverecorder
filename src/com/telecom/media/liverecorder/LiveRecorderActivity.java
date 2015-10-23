@@ -63,8 +63,7 @@ public class LiveRecorderActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(getApplicationContext(), "start live video", Toast.LENGTH_SHORT).show();
-//				mLiveHelper.startLiveRecord();
-				mLiveHelper.addCallback();
+				mLiveHelper.startLive();
 //								mLiveHelper.startRecordVideo();
 			}
 		});

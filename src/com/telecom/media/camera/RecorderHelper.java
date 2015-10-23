@@ -18,18 +18,18 @@ import android.view.Surface;
  * @date 2015年9月8日 下午11:32:01
  */
 public class RecorderHelper {
-	private final String	TAG			= "CameraRecorder";
+	private final String	TAG	= "CameraRecorder";
 	private MediaRecorder	mMediaRecorder;
 	private Camera			mCamera;
 	private Surface			mSurface;
 
 	/** 视频参数，如视频画质、音频采样率等 */
-	private VideoProfile	mProfile	= new VideoProfile();
+	private VideoProfile mProfile = new VideoProfile();
 
 	private String			mPath;
 	private FileDescriptor	mFD;
 
-	private int				orientationDegrees;
+	private int orientationDegrees;
 
 	/**
 	 * 
@@ -152,6 +152,13 @@ public class RecorderHelper {
 				@Override
 				public void onError(MediaRecorder mr, int what, int extra) {
 					Log.e(TAG, "what=" + what + ", extra=" + extra);
+					switch (what) {
+					case MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN:
+						Log.e(TAG, "error MEDIA_RECORDER_ERROR_UNKNOWN");
+						break;
+					default:
+						break;
+					}
 				}
 			});
 			mMediaRecorder.setOnInfoListener(new OnInfoListener() {
@@ -159,6 +166,17 @@ public class RecorderHelper {
 				@Override
 				public void onInfo(MediaRecorder mr, int what, int extra) {
 					Log.e(TAG, "onInfo what=" + what + ", extra=" + extra);
+					switch (what) {
+					case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
+						Log.e(TAG, "info MEDIA_RECORDER_INFO_MAX_DURATION_REACHED");
+						break;
+					case MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED:
+						Log.e(TAG, "info MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED");
+						break;
+					case MediaRecorder.MEDIA_RECORDER_INFO_UNKNOWN:
+						Log.e(TAG, "info MEDIA_RECORDER_ERROR_UNKNOWN");
+						break;
+					}
 				}
 			});
 			mMediaRecorder.start();

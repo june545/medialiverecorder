@@ -65,7 +65,7 @@ public class CameraHelper implements SurfaceHolder.Callback {
 				//				mCamera.setParameters(parameters);
 
 				setCameraParameters();
-				
+
 			} catch (Exception e) {
 				Log.d(TAG, "Error starting camera preview: " + e.getMessage());
 				e.printStackTrace();
@@ -78,6 +78,7 @@ public class CameraHelper implements SurfaceHolder.Callback {
 	private void setCameraParameters() {
 		Parameters mParameters = mCamera.getParameters();
 		CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+		mParameters.setPreviewFpsRange(10, 15);
 		mParameters.setPreviewSize(camcorderProfile.videoFrameWidth, camcorderProfile.videoFrameHeight);
 		//	mParameters.setPreviewFrameRate(camcorderProfile.videoFrameRate);
 
@@ -111,7 +112,7 @@ public class CameraHelper implements SurfaceHolder.Callback {
 		//		}
 
 		mParameters.setFocusMode(Camera.Parameters.FLASH_MODE_AUTO);
-//		mParameters.setPictureFormat(ImageFormat.NV21);
+		//		mParameters.setPictureFormat(ImageFormat.NV21);
 		mCamera.setParameters(mParameters);
 		// Keep preview size up to date.
 	}
@@ -122,7 +123,7 @@ public class CameraHelper implements SurfaceHolder.Callback {
 			Log.d(TAG, "the camera starts previewing");
 			isPreview = true;
 		}
-//		set();
+		//		set();
 	}
 
 	/** 是否正在预览 */
@@ -133,18 +134,18 @@ public class CameraHelper implements SurfaceHolder.Callback {
 	private void set() {
 		if (isPreview) {
 			Log.d(TAG, "set preview callback");
-//			mCamera.setPreviewCallback(new PreviewCallback() {
-//
-//				@Override
-//				public void onPreviewFrame(byte[] data, Camera camera) {
-//					Log.d(TAG, "onPreviewFrame c");
-//										StringBuffer sb = new StringBuffer();
-//										for (byte b : data) {
-//											sb.append(new String(data));
-//										}
-//										Log.d(TAG, "onPreviewFrame" + ByteUtil.getHexString(data));
-//				}
-//			});
+			//			mCamera.setPreviewCallback(new PreviewCallback() {
+			//
+			//				@Override
+			//				public void onPreviewFrame(byte[] data, Camera camera) {
+			//					Log.d(TAG, "onPreviewFrame c");
+			//										StringBuffer sb = new StringBuffer();
+			//										for (byte b : data) {
+			//											sb.append(new String(data));
+			//										}
+			//										Log.d(TAG, "onPreviewFrame" + ByteUtil.getHexString(data));
+			//				}
+			//			});
 			mCamera.addCallbackBuffer(new byte[518400]);
 			mCamera.setPreviewCallbackWithBuffer(new PreviewCallback() {
 

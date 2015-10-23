@@ -5,9 +5,8 @@ package com.telecom.media.camera.live;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Socket;
+
+import com.telecom.media.camera.live.frame.FrameStreamer;
 
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
@@ -24,7 +23,7 @@ import android.util.Log;
 public class PreviewCallbackImpl implements PreviewCallback {
 	private final String TAG = "PreviewCallbackImpl";
 
-	private String ipname = "192.168.1.7";
+	private String ipname = "192.168.18.37";
 
 	/*
 	 * (non-Javadoc)
@@ -44,8 +43,7 @@ public class PreviewCallbackImpl implements PreviewCallback {
 				image.compressToJpeg(new Rect(0, 0, size.width, size.height), 80, outstream);
 				outstream.flush();
 				// 启用线程将图像数据发送出去
-				Thread th = new MyThread(outstream, ipname);
-				th.start();
+				(new FrameStreamer(new ByteArrayInputStream(outstream.toByteArray()), ipname, 8089)).start();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -53,39 +51,4 @@ public class PreviewCallbackImpl implements PreviewCallback {
 		}
 	}
 
-	class MyThread extends Thread {
-		private byte					byteBuffer[]	= new byte[1024];
-		private OutputStream			outsocket;
-		private ByteArrayOutputStream	myoutputstream;
-		private String					ipname;
-
-		public MyThread(ByteArrayOutputStream myoutputstream, String ipname) {
-			this.myoutputstream = myoutputstream;
-			this.ipname = ipname;
-			try {
-				myoutputstream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		public void run() {
-			try {
-				// 将图像数据通过Socket发送出去
-				Socket tempSocket = new Socket(ipname, 8089);
-				outsocket = tempSocket.getOutputStream();
-				ByteArrayInputStream inputstream = new ByteArrayInputStream(myoutputstream.toByteArray());
-				int amount;
-				while ((amount = inputstream.read(byteBuffer)) != -1) {
-					outsocket.write(byteBuffer, 0, amount);
-				}
-				myoutputstream.flush();
-				myoutputstream.close();
-				tempSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
 }
